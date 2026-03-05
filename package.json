@@ -1,0 +1,26 @@
+{
+  "name": "lems-monorepo",
+  "version": "0.0.1",
+  "private": true,
+  "description": "LimeChain Expense Management System - Monorepo",
+  "scripts": {
+    "dev:fe": "pnpm --filter fe dev",
+    "dev:be": "pnpm --filter be start:dev",
+    "dev:all": "pnpm --filter fe dev & pnpm --filter be start:dev",
+    "build:fe": "pnpm --filter fe build",
+    "build:be": "pnpm --filter be build",
+    "build:all": "pnpm --filter fe build && pnpm --filter be build",
+    "lint:fe": "pnpm --filter fe lint",
+    "lint:be": "pnpm --filter be lint",
+    "lint:all": "pnpm --filter fe lint && pnpm --filter be lint",
+    "format:fe": "pnpm --filter fe format",
+    "db:up": "docker-compose -f docker/docker-compose.yml up -d",
+    "db:down": "docker-compose -f docker/docker-compose.yml down",
+    "db:push": "pnpm --filter be prisma db push",
+    "db:generate": "pnpm --filter be prisma generate"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}
