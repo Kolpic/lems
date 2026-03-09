@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: lems-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: lems_admin
+      POSTGRES_PASSWORD: lems_password
+      POSTGRES_DB: lems_local
+    volumes:
+      - lems_pg_data:/var/lib/postgresql/data
+
+volumes:
+  lems_pg_data:
+    name: lems_pg_data
