@@ -7,5 +7,71 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum TransactionType {
+  REFILL
+  SPEND
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model Currency {
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  symbol   String
+  decimals Int
+
+  users        User[]
+  transactions Transaction[]
+}
+
+model Role {
+  id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String @unique
+
+  users User[]
+}
+
+model User {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String
+  wallet_address String   @unique @db.VarChar(44)
+  target_balance Decimal  @db.Decimal
+  is_active      Boolean  @default(true)
+  created_at     DateTime @default(now()) @db.Timestamptz
+  project_id     String
+
+  currency_id String   @db.Uuid
+  currency    Currency @relation(fields: [currency_id], references: [id])
+
+  role_id String @db.Uuid
+  role    Role   @relation(fields: [role_id], references: [id])
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  id            String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  signature     String            @unique @db.VarChar(88)
+  type          TransactionType
+  merchant_name String            @db.Text
+  amount        Decimal           @db.Decimal
+  status        TransactionStatus
+  block_time    DateTime          @db.Timestamptz
+
+  pm_id String @db.Uuid
+  pm    User   @relation(fields: [pm_id], references: [id])
+
+  currency_id String   @db.Uuid
+  currency    Currency @relation(fields: [currency_id], references: [id])
+
+  @@index([pm_id, block_time(sort: Desc)])
 }
