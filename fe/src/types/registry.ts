@@ -11,6 +11,18 @@ export interface PM {
     readonly id: string;
     readonly symbol: string;
   };
+  readonly project: {
+    readonly id: string;
+    readonly name: string;
+  };
+}
+
+/** Shape of a project record returned by GET /api/v1/registry/projects. */
+export interface Project {
+  readonly id: string;
+  readonly name: string;
+  readonly start_date: string;
+  readonly end_date: string;
 }
 
 /** Shape of a currency record returned by GET /api/v1/registry/currencies. */

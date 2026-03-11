@@ -17,9 +17,9 @@ const columns = [
     header: 'Name',
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor('project_id', {
-    header: 'Project ID',
-    cell: (info) => info.getValue(),
+  columnHelper.accessor('project', {
+    header: 'Project',
+    cell: (info) => info.getValue().name,
   }),
   columnHelper.accessor('wallet_address', {
     header: 'Wallet Address',

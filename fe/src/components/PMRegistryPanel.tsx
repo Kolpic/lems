@@ -3,7 +3,7 @@ import { PMTable } from './PMTable';
 import { AddPMForm } from './AddPMForm';
 
 export function PMRegistryPanel() {
-  const { pms, isLoading, error, currencies, addPM, isAdding } = useRegistryManager();
+  const { pms, isLoading, error, currencies, projects, addPM, isAdding } = useRegistryManager();
 
   return (
     <div className="mx-auto max-w-5xl space-y-8 p-6">
@@ -25,7 +25,7 @@ export function PMRegistryPanel() {
 
       <div className="rounded border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-gray-800">Add Project Manager</h2>
-        <AddPMForm onSubmit={addPM} isSubmitting={isAdding} currencies={currencies} />
+        <AddPMForm onSubmit={addPM} isSubmitting={isAdding} currencies={currencies} projects={projects} />
       </div>
     </div>
   );
