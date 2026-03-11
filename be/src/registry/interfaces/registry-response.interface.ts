@@ -26,3 +26,12 @@ export interface RegistryListItem {
     readonly symbol: string;
   };
 }
+
+/**
+ * Shape of a currency record returned in the currencies listing.
+ */
+export interface CurrencyListItem {
+  readonly id: string;
+  readonly symbol: string;
+  readonly decimals: number;
+}

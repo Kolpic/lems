@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import type { CreatePMPayload } from '../types/registry';
+import type { CreatePMPayload, Currency } from '../types/registry';
 
 interface AddPMFormProps {
   readonly onSubmit: (payload: CreatePMPayload) => Promise<unknown>;
   readonly isSubmitting: boolean;
+  readonly currencies: readonly Currency[];
 }
 
 interface FormFields {
@@ -53,13 +54,13 @@ function validate(fields: FormFields): FormErrors {
   }
 
   if (!fields.currency_id.trim()) {
-    errors.currency_id = 'Currency ID is required.';
+    errors.currency_id = 'Please select a currency.';
   }
 
   return errors;
 }
 
-export function AddPMForm({ onSubmit, isSubmitting }: AddPMFormProps) {
+export function AddPMForm({ onSubmit, isSubmitting, currencies }: AddPMFormProps) {
   const [fields, setFields] = useState<FormFields>(INITIAL_FIELDS);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -150,7 +151,42 @@ export function AddPMForm({ onSubmit, isSubmitting }: AddPMFormProps) {
       {renderField('wallet_address', 'Wallet Address')}
       {renderField('target_balance', 'Target Balance', 'number')}
       {renderField('project_id', 'Project ID')}
-      {renderField('currency_id', 'Currency ID')}
+
+      {(() => {
+        const error = touched['currency_id'] ? errors.currency_id : undefined;
+        const errorId = 'pm-currency_id-error';
+
+        return (
+          <div className="flex flex-col gap-1">
+            <label htmlFor="pm-currency_id" className="text-sm font-medium text-gray-700">
+              Currency
+            </label>
+            <select
+              id="pm-currency_id"
+              value={fields.currency_id}
+              onChange={(e) => handleChange('currency_id', e.target.value)}
+              onBlur={() => handleBlur('currency_id')}
+              aria-invalid={error ? 'true' : undefined}
+              aria-describedby={error ? errorId : undefined}
+              className={`rounded border px-3 py-2 text-sm outline-none transition-colors focus:ring-2 focus:ring-blue-500 ${
+                error ? 'border-red-500' : 'border-gray-300'
+              }`}
+            >
+              <option value="">Select a currency</option>
+              {currencies.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.symbol}
+                </option>
+              ))}
+            </select>
+            {error && (
+              <p id={errorId} className="text-xs text-red-600" role="alert">
+                {error}
+              </p>
+            )}
+          </div>
+        );
+      })()}
 
       <button
         type="submit"
