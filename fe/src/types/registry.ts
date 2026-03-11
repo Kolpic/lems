@@ -13,6 +13,13 @@ export interface PM {
   };
 }
 
+/** Shape of a currency record returned by GET /api/v1/registry/currencies. */
+export interface Currency {
+  readonly id: string;
+  readonly symbol: string;
+  readonly decimals: number;
+}
+
 /** Payload sent to POST /api/v1/registry. */
 export interface CreatePMPayload {
   readonly name: string;

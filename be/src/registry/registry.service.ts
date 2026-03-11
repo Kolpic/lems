@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreatePMDto } from './dto/create-pm.dto';
 import {
   CreatePMResponse,
+  CurrencyListItem,
   RegistryListItem,
 } from './interfaces/registry-response.interface';
 
@@ -42,6 +43,21 @@ export class RegistryService {
       ...user,
       target_balance: user.target_balance.toString(),
     }));
+  }
+
+  /**
+   * Retrieves all available currencies for PM allocation.
+   *
+   * @returns Array of currency records with id, symbol, and decimals
+   */
+  async findAllCurrencies(): Promise<CurrencyListItem[]> {
+    return this.prisma.currency.findMany({
+      select: {
+        id: true,
+        symbol: true,
+        decimals: true,
+      },
+    });
   }
 
   /**

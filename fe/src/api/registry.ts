@@ -1,4 +1,4 @@
-import type { PM, CreatePMPayload, CreatePMResponse } from '../types/registry';
+import type { PM, Currency, CreatePMPayload, CreatePMResponse } from '../types/registry';
 
 const API_BASE_URL = 'http://localhost:3000/api/v1';
 
@@ -21,6 +21,19 @@ export async function fetchRegistry(): Promise<PM[]> {
   }
 
   return response.json() as Promise<PM[]>;
+}
+
+/** Fetches all available currencies for PM allocation. */
+export async function fetchCurrencies(): Promise<Currency[]> {
+  const response = await fetch(`${API_BASE_URL}/registry/currencies`, {
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch currencies: ${response.status}`);
+  }
+
+  return response.json() as Promise<Currency[]>;
 }
 
 /** Creates a new PM registration. */

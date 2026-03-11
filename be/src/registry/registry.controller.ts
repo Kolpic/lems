@@ -14,6 +14,7 @@ import { RegistryService } from './registry.service';
 import { CreatePMDto } from './dto/create-pm.dto';
 import {
   CreatePMResponse,
+  CurrencyListItem,
   RegistryListItem,
 } from './interfaces/registry-response.interface';
 
@@ -37,6 +38,16 @@ export class RegistryController {
   @Get()
   async findAll(): Promise<RegistryListItem[]> {
     return this.registryService.findAll();
+  }
+
+  /**
+   * Fetches all available currencies for PM allocation.
+   *
+   * @returns Array of currency records with id, symbol, and decimals
+   */
+  @Get('currencies')
+  async findAllCurrencies(): Promise<CurrencyListItem[]> {
+    return this.registryService.findAllCurrencies();
   }
 
   /**
