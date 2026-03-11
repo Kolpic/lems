@@ -5,10 +5,11 @@ import { useAuth } from './useAuth';
 /** Combines auth logout with wallet disconnect to fully clear session state. */
 export function useLogout() {
   const { logout } = useAuth();
-  const { disconnect } = useWallet();
+  const { disconnect, select } = useWallet();
 
   return useCallback(() => {
     logout();
     void disconnect();
-  }, [logout, disconnect]);
+    select(null);
+  }, [logout, disconnect, select]);
 }
