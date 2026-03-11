@@ -32,6 +32,12 @@ export interface Currency {
   readonly decimals: number;
 }
 
+/** Payload sent to PATCH /api/v1/registry/:id/target. */
+export interface UpdateTargetPayload {
+  readonly id: string;
+  readonly target_balance: number;
+}
+
 /** Payload sent to POST /api/v1/registry. */
 export interface CreatePMPayload {
   readonly name: string;

@@ -1,11 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePMDto } from './dto/create-pm.dto';
+import { UpdateTargetBalanceDto } from './dto/update-target-balance.dto';
 import {
   CreatePMResponse,
   CurrencyListItem,
   ProjectListItem,
   RegistryListItem,
+  UpdateTargetResponse,
 } from './interfaces/registry-response.interface';
 
 /**
@@ -91,6 +93,43 @@ export class RegistryService {
    * @returns Success response with the new PM's id and is_active status
    * @throws NotFoundException if the 'USER' role does not exist in the database
    */
+  /**
+   * Updates the target balance for an existing Project Manager.
+   *
+   * @param id - The UUID of the PM to update
+   * @param dto - The validated update payload containing the new target_balance
+   * @returns Success response with the updated target_balance as a string
+   * @throws NotFoundException if no PM exists with the given id
+   */
+  async updateTargetBalance(
+    id: string,
+    dto: UpdateTargetBalanceDto,
+  ): Promise<UpdateTargetResponse> {
+    const existing = await this.prisma.user.findUnique({ where: { id } });
+
+    if (!existing) {
+      throw new NotFoundException(`PM with id "${id}" not found.`);
+    }
+
+    const updated = await this.prisma.user.update({
+      where: { id },
+      data: { target_balance: dto.target_balance },
+      select: {
+        id: true,
+        target_balance: true,
+      },
+    });
+
+    return {
+      status: 'success',
+      message: 'Target balance updated successfully.',
+      data: {
+        id: updated.id,
+        target_balance: updated.target_balance.toString(),
+      },
+    };
+  }
+
   async createPM(dto: CreatePMDto): Promise<CreatePMResponse> {
     const userRole = await this.prisma.role.findUnique({
       where: { name: 'USER' },

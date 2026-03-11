@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchRegistry, fetchCurrencies, fetchProjects, createPM } from '../api/registry';
-import type { CreatePMPayload } from '../types/registry';
+import { fetchRegistry, fetchCurrencies, fetchProjects, createPM, updateTargetBalance } from '../api/registry';
+import type { CreatePMPayload, UpdateTargetPayload } from '../types/registry';
 
 const REGISTRY_KEY = ['registry'] as const;
 const CURRENCIES_KEY = ['currencies'] as const;
@@ -32,6 +32,13 @@ export function useRegistryManager() {
     },
   });
 
+  const updateTargetMutation = useMutation({
+    mutationFn: (payload: UpdateTargetPayload) => updateTargetBalance(payload),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: REGISTRY_KEY });
+    },
+  });
+
   return {
     pms: registryQuery.data ?? [],
     isLoading: registryQuery.isLoading,
@@ -41,5 +48,7 @@ export function useRegistryManager() {
     addPM: addPMMutation.mutateAsync,
     isAdding: addPMMutation.isPending,
     addError: addPMMutation.error,
+    updateTarget: updateTargetMutation.mutateAsync,
+    isUpdatingTarget: updateTargetMutation.isPending,
   };
 }

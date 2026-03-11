@@ -1,4 +1,4 @@
-import type { PM, Currency, Project, CreatePMPayload, CreatePMResponse } from '../types/registry';
+import type { PM, Currency, Project, CreatePMPayload, CreatePMResponse, UpdateTargetPayload } from '../types/registry';
 
 const API_BASE_URL = 'http://localhost:3000/api/v1';
 
@@ -47,6 +47,21 @@ export async function fetchProjects(): Promise<Project[]> {
   }
 
   return response.json() as Promise<Project[]>;
+}
+
+/** Updates the target balance for an existing PM. */
+export async function updateTargetBalance(payload: UpdateTargetPayload): Promise<CreatePMResponse> {
+  const response = await fetch(`${API_BASE_URL}/registry/${payload.id}/target`, {
+    method: 'PATCH',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ target_balance: payload.target_balance }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to update target balance: ${response.status}`);
+  }
+
+  return response.json() as Promise<CreatePMResponse>;
 }
 
 /** Creates a new PM registration. */
