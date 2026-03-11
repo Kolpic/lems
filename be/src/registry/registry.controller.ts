@@ -4,6 +4,9 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -12,11 +15,13 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { RegistryService } from './registry.service';
 import { CreatePMDto } from './dto/create-pm.dto';
+import { UpdateTargetBalanceDto } from './dto/update-target-balance.dto';
 import {
   CreatePMResponse,
   CurrencyListItem,
   ProjectListItem,
   RegistryListItem,
+  UpdateTargetResponse,
 } from './interfaces/registry-response.interface';
 
 /**
@@ -71,5 +76,20 @@ export class RegistryController {
   @HttpCode(HttpStatus.CREATED)
   async createPM(@Body() dto: CreatePMDto): Promise<CreatePMResponse> {
     return this.registryService.createPM(dto);
+  }
+
+  /**
+   * Updates the target balance for an existing PM.
+   *
+   * @param id - The UUID of the PM to update
+   * @param dto - The validated update payload with the new target_balance
+   * @returns Success response with the updated target_balance
+   */
+  @Patch(':id/target')
+  async updateTargetBalance(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateTargetBalanceDto,
+  ): Promise<UpdateTargetResponse> {
+    return this.registryService.updateTargetBalance(id, dto);
   }
 }

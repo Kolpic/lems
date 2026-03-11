@@ -32,6 +32,18 @@ export interface RegistryListItem {
 }
 
 /**
+ * Response payload for a successful target balance update.
+ */
+export interface UpdateTargetResponse {
+  readonly status: 'success';
+  readonly message: string;
+  readonly data: {
+    readonly id: string;
+    readonly target_balance: string;
+  };
+}
+
+/**
  * Shape of a currency record returned in the currencies listing.
  */
 export interface CurrencyListItem {

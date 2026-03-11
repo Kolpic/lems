@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -5,53 +6,73 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import type { PM } from '../types/registry';
+import { EditTargetDialog } from './EditTargetDialog';
 
 interface PMTableProps {
   readonly data: PM[];
+  readonly onUpdateTarget: (id: string, newBalance: number) => Promise<unknown>;
+  readonly isUpdatingTarget: boolean;
 }
 
 const columnHelper = createColumnHelper<PM>();
 
-const columns = [
-  columnHelper.accessor('name', {
-    header: 'Name',
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor('project', {
-    header: 'Project',
-    cell: (info) => info.getValue().name,
-  }),
-  columnHelper.accessor('wallet_address', {
-    header: 'Wallet Address',
-    cell: (info) => {
-      const address = info.getValue();
-      return (
-        <span className="font-mono text-sm" title={address}>
-          {address.slice(0, 6)}...{address.slice(-4)}
-        </span>
-      );
-    },
-  }),
-  columnHelper.accessor('target_balance', {
-    header: 'Target Balance',
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor('is_active', {
-    header: 'Status',
-    cell: (info) =>
-      info.getValue() ? (
-        <span className="inline-block rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
-          Active
-        </span>
-      ) : (
-        <span className="inline-block rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">
-          Inactive
-        </span>
-      ),
-  }),
-];
+export function PMTable({ data, onUpdateTarget, isUpdatingTarget }: PMTableProps) {
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor('name', {
+        header: 'Name',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor('project', {
+        header: 'Project',
+        cell: (info) => info.getValue().name,
+      }),
+      columnHelper.accessor('wallet_address', {
+        header: 'Wallet Address',
+        cell: (info) => {
+          const address = info.getValue();
+          return (
+            <span className="font-mono text-sm" title={address}>
+              {address.slice(0, 6)}...{address.slice(-4)}
+            </span>
+          );
+        },
+      }),
+      columnHelper.accessor('target_balance', {
+        header: 'Target Balance',
+        cell: (info) => {
+          const row = info.row.original;
+          return (
+            <span className="inline-flex items-center">
+              {info.getValue()}
+              <EditTargetDialog
+                pmId={row.id}
+                pmName={row.name}
+                currentBalance={info.getValue()}
+                onSave={onUpdateTarget}
+                isSaving={isUpdatingTarget}
+              />
+            </span>
+          );
+        },
+      }),
+      columnHelper.accessor('is_active', {
+        header: 'Status',
+        cell: (info) =>
+          info.getValue() ? (
+            <span className="inline-block rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
+              Active
+            </span>
+          ) : (
+            <span className="inline-block rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">
+              Inactive
+            </span>
+          ),
+      }),
+    ],
+    [onUpdateTarget, isUpdatingTarget],
+  );
 
-export function PMTable({ data }: PMTableProps) {
   const table = useReactTable({
     data,
     columns,
