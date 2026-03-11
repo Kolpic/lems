@@ -3,7 +3,7 @@ import type { PM, CreatePMPayload, CreatePMResponse } from '../types/registry';
 const API_BASE_URL = 'http://localhost:3000/api/v1';
 
 function getAuthHeaders(): HeadersInit {
-  const token = localStorage.getItem('access_token') ?? '';
+  const token = sessionStorage.getItem('access_token') ?? '';
   return {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,
