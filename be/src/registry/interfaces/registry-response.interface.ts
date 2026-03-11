@@ -25,6 +25,10 @@ export interface RegistryListItem {
     readonly id: string;
     readonly symbol: string;
   };
+  readonly project: {
+    readonly id: string;
+    readonly name: string;
+  };
 }
 
 /**
@@ -34,4 +38,14 @@ export interface CurrencyListItem {
   readonly id: string;
   readonly symbol: string;
   readonly decimals: number;
+}
+
+/**
+ * Shape of a project record returned in the projects listing.
+ */
+export interface ProjectListItem {
+  readonly id: string;
+  readonly name: string;
+  readonly start_date: Date;
+  readonly end_date: Date;
 }

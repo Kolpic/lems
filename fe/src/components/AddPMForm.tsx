@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import type { CreatePMPayload, Currency } from '../types/registry';
+import type { CreatePMPayload, Currency, Project } from '../types/registry';
 
 interface AddPMFormProps {
   readonly onSubmit: (payload: CreatePMPayload) => Promise<unknown>;
   readonly isSubmitting: boolean;
   readonly currencies: readonly Currency[];
+  readonly projects: readonly Project[];
 }
 
 interface FormFields {
@@ -50,7 +51,7 @@ function validate(fields: FormFields): FormErrors {
   }
 
   if (!fields.project_id.trim()) {
-    errors.project_id = 'A Project ID must be assigned to this wallet.';
+    errors.project_id = 'Please select a project.';
   }
 
   if (!fields.currency_id.trim()) {
@@ -60,7 +61,7 @@ function validate(fields: FormFields): FormErrors {
   return errors;
 }
 
-export function AddPMForm({ onSubmit, isSubmitting, currencies }: AddPMFormProps) {
+export function AddPMForm({ onSubmit, isSubmitting, currencies, projects }: AddPMFormProps) {
   const [fields, setFields] = useState<FormFields>(INITIAL_FIELDS);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -150,7 +151,41 @@ export function AddPMForm({ onSubmit, isSubmitting, currencies }: AddPMFormProps
       {renderField('name', 'Name')}
       {renderField('wallet_address', 'Wallet Address')}
       {renderField('target_balance', 'Target Balance', 'number')}
-      {renderField('project_id', 'Project ID')}
+      {(() => {
+        const error = touched['project_id'] ? errors.project_id : undefined;
+        const errorId = 'pm-project_id-error';
+
+        return (
+          <div className="flex flex-col gap-1">
+            <label htmlFor="pm-project_id" className="text-sm font-medium text-gray-700">
+              Project
+            </label>
+            <select
+              id="pm-project_id"
+              value={fields.project_id}
+              onChange={(e) => handleChange('project_id', e.target.value)}
+              onBlur={() => handleBlur('project_id')}
+              aria-invalid={error ? 'true' : undefined}
+              aria-describedby={error ? errorId : undefined}
+              className={`rounded border px-3 py-2 text-sm outline-none transition-colors focus:ring-2 focus:ring-blue-500 ${
+                error ? 'border-red-500' : 'border-gray-300'
+              }`}
+            >
+              <option value="">Select a project</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+            {error && (
+              <p id={errorId} className="text-xs text-red-600" role="alert">
+                {error}
+              </p>
+            )}
+          </div>
+        );
+      })()}
 
       {(() => {
         const error = touched['currency_id'] ? errors.currency_id : undefined;

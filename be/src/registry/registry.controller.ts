@@ -15,6 +15,7 @@ import { CreatePMDto } from './dto/create-pm.dto';
 import {
   CreatePMResponse,
   CurrencyListItem,
+  ProjectListItem,
   RegistryListItem,
 } from './interfaces/registry-response.interface';
 
@@ -48,6 +49,16 @@ export class RegistryController {
   @Get('currencies')
   async findAllCurrencies(): Promise<CurrencyListItem[]> {
     return this.registryService.findAllCurrencies();
+  }
+
+  /**
+   * Fetches all available projects for PM assignment.
+   *
+   * @returns Array of project records with id, name, start_date, and end_date
+   */
+  @Get('projects')
+  async findAllProjects(): Promise<ProjectListItem[]> {
+    return this.registryService.findAllProjects();
   }
 
   /**

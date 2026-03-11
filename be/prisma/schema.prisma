@@ -40,6 +40,15 @@ model Role {
   users User[]
 }
 
+model Project {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String   @unique
+  start_date DateTime @db.Timestamptz
+  end_date   DateTime @db.Timestamptz
+
+  user User?
+}
+
 model User {
   id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name           String
@@ -47,7 +56,9 @@ model User {
   target_balance Decimal  @db.Decimal
   is_active      Boolean  @default(true)
   created_at     DateTime @default(now()) @db.Timestamptz
-  project_id     String
+
+  project_id String  @unique @db.Uuid
+  project    Project @relation(fields: [project_id], references: [id])
 
   currency_id String   @db.Uuid
   currency    Currency @relation(fields: [currency_id], references: [id])

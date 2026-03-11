@@ -1,9 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchRegistry, fetchCurrencies, createPM } from '../api/registry';
+import { fetchRegistry, fetchCurrencies, fetchProjects, createPM } from '../api/registry';
 import type { CreatePMPayload } from '../types/registry';
 
 const REGISTRY_KEY = ['registry'] as const;
 const CURRENCIES_KEY = ['currencies'] as const;
+const PROJECTS_KEY = ['projects'] as const;
 
 /** Hook that provides registry data fetching and PM creation via TanStack Query. */
 export function useRegistryManager() {
@@ -19,6 +20,11 @@ export function useRegistryManager() {
     queryFn: fetchCurrencies,
   });
 
+  const projectsQuery = useQuery({
+    queryKey: PROJECTS_KEY,
+    queryFn: fetchProjects,
+  });
+
   const addPMMutation = useMutation({
     mutationFn: (payload: CreatePMPayload) => createPM(payload),
     onSuccess: () => {
@@ -31,6 +37,7 @@ export function useRegistryManager() {
     isLoading: registryQuery.isLoading,
     error: registryQuery.error,
     currencies: currenciesQuery.data ?? [],
+    projects: projectsQuery.data ?? [],
     addPM: addPMMutation.mutateAsync,
     isAdding: addPMMutation.isPending,
     addError: addPMMutation.error,

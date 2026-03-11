@@ -4,6 +4,7 @@ import { CreatePMDto } from './dto/create-pm.dto';
 import {
   CreatePMResponse,
   CurrencyListItem,
+  ProjectListItem,
   RegistryListItem,
 } from './interfaces/registry-response.interface';
 
@@ -36,6 +37,12 @@ export class RegistryService {
             symbol: true,
           },
         },
+        project: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -56,6 +63,22 @@ export class RegistryService {
         id: true,
         symbol: true,
         decimals: true,
+      },
+    });
+  }
+
+  /**
+   * Retrieves all available projects for PM assignment.
+   *
+   * @returns Array of project records with id, name, start_date, and end_date
+   */
+  async findAllProjects(): Promise<ProjectListItem[]> {
+    return this.prisma.project.findMany({
+      select: {
+        id: true,
+        name: true,
+        start_date: true,
+        end_date: true,
       },
     });
   }
