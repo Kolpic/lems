@@ -1,13 +1,17 @@
 import { useLogout } from '../hooks/useLogout';
 import { PMRegistryPanel } from './PMRegistryPanel';
+import { TreasuryPulseHeader } from './TreasuryPulseHeader';
+import { BatchRefillModule } from './BatchRefillModule';
+import { GlobalTransactionFeed } from './GlobalTransactionFeed';
 
-/** Admin dashboard view wrapping the PM Registry Panel with sign-out. */
+/** Admin dashboard view with PM registry, treasury overview, and transaction feed. */
 export function AdminDashboard() {
   const logout = useLogout();
 
   return (
-    <div>
-      <div className="mx-auto flex max-w-5xl items-center justify-end p-6 pb-0">
+    <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
         <button
           type="button"
           onClick={logout}
@@ -16,7 +20,18 @@ export function AdminDashboard() {
           Sign Out
         </button>
       </div>
-      <PMRegistryPanel />
+
+      <TreasuryPulseHeader />
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <PMRegistryPanel />
+        </div>
+        <div className="space-y-6">
+          <BatchRefillModule />
+          <GlobalTransactionFeed />
+        </div>
+      </div>
     </div>
   );
 }
