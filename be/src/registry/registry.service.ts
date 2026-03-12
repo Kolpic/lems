@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+
+import { WalletMonitorService } from '../blockchain/wallet-monitor.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePMDto } from './dto/create-pm.dto';
 import { UpdateTargetBalanceDto } from './dto/update-target-balance.dto';
@@ -13,10 +15,14 @@ import {
 /**
  * Service responsible for managing the Project Manager registry.
  * Handles PM creation with automatic role assignment and listing.
+ * Triggers real-time wallet monitoring on new PM creation.
  */
 @Injectable()
 export class RegistryService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly walletMonitor: WalletMonitorService,
+  ) {}
 
   /**
    * Retrieves all registered project managers with their currency info.
@@ -155,6 +161,9 @@ export class RegistryService {
         is_active: true,
       },
     });
+
+    // Start monitoring the new PM wallet immediately (fire-and-forget).
+    this.walletMonitor.subscribeToWallet(dto.wallet_address);
 
     return {
       status: 'success',
