@@ -1,17 +1,19 @@
 import { useRegistryManager } from '../hooks/useRegistryManager';
 import { PMTable } from './PMTable';
 import { AddPMForm } from './AddPMForm';
+import { Spinner } from './Spinner';
 
+/** PM registry panel with table, edit, and add form. Layout-agnostic — parent owns spacing/width. */
 export function PMRegistryPanel() {
   const { pms, isLoading, error, currencies, projects, addPM, isAdding, updateTarget, isUpdatingTarget } = useRegistryManager();
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8 p-6">
-      <h1 className="text-2xl font-bold text-gray-900">PM Registry</h1>
+    <div className="space-y-8">
+      <h2 className="text-xl font-semibold text-gray-900">PM Registry</h2>
 
       {isLoading && (
         <div className="flex items-center justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+          <Spinner />
         </div>
       )}
 
