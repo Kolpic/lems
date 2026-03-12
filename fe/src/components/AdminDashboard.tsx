@@ -1,9 +1,9 @@
-import { useAuth } from '../hooks/useAuth';
+import { useLogout } from '../hooks/useLogout';
 import { PMRegistryPanel } from './PMRegistryPanel';
 
 /** Admin dashboard view wrapping the PM Registry Panel with sign-out. */
 export function AdminDashboard() {
-  const { logout } = useAuth();
+  const logout = useLogout();
 
   return (
     <div>

@@ -1,8 +1,10 @@
 import { useAuth } from '../hooks/useAuth';
+import { useLogout } from '../hooks/useLogout';
 
 /** Placeholder dashboard view for project managers (USER role). */
 export function PMDashboard() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
+  const logout = useLogout();
 
   return (
     <div className="mx-auto max-w-5xl space-y-8 p-6">
